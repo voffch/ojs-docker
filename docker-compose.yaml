@@ -1,0 +1,46 @@
+name: ojs-lemp
+
+services:
+  nginx:
+    container_name: "ojs-nginx"
+    image: nginx:stable-alpine
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:8080:80
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./volumes/html:/var/www/html
+      - ./volumes/files:/var/www/files
+#      - ./volumes/etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./volumes/etc/nginx/conf.d/default.conf:/etc/nginx/conf.d/default.conf
+      - ./volumes/logs/nginx:/var/log/nginx
+    depends_on:
+      - php
+      - db
+
+  php:
+    container_name: "ojs-php"
+#    image: php:7.4-fpm-alpine
+    image: voffch/php4ojs:7.4
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime
+      - ./volumes/html:/var/www/html
+      - ./volumes/files:/var/www/files
+      - ./volumes/etc/php/conf.d/php-custom.ini:/usr/local/etc/php/conf.d/php-custom.ini
+
+  db:
+    container_name: "ojs-db"
+#    image: mariadb:11.4
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ojsPwd
+      MYSQL_DATABASE: ojs
+      MYSQL_USER: ojs
+      MYSQL_PASSWORD: ojsPwd
+    volumes:
+      - ./volumes/db:/var/lib/mysql
+#      - ./volumes/logs/mysql:/var/log/mysql
+#      - ./volumes/dump:/docker-entrypoint-initdb.d
+#      - ./volumes/config/db.charset.conf:/etc/mysql/conf.d/charset.cnf
