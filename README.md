@@ -2,6 +2,8 @@
 
 This is my quick and dirty hack to get the OJS (at the moment, 3.3.0-* LTS only) up and running in docker.
 
+This is intended for the local deployment only, would likely fail behind reverse proxy.
+
 ## Why
 
 To try things out! And to get that specific version of OJS with a specific combination of php (7.4), database, and the webserver (nginx+php-fpm). Otherwise, I'd use one of the [official OJS docker images](https://hub.docker.com/r/pkpofficial/ojs) or the [files to build them](https://gitlab.com/pkp-org/docker/ojs). [Here](https://github.com/pkp/docker-ojs/tree/main) you can see how to use the official images.
@@ -16,12 +18,13 @@ Next, either [download](https://pkp.sfu.ca/software/ojs/download/archive/) and u
 
 ```bash
 chmod a+x ./get_ojs.sh
+./get_ojs.sh
 ```
 
 Make sure that `docker-compose.yaml` suits your needs, then run
 
 ```bash
-docker compose up
+docker-compose up -d
 docker exec ojs-php chown -R www-data /var/www/html/config.inc.php /var/www/html/public /var/www/html/cache /var/www/html/plugins /var/www/files
 ```
 
